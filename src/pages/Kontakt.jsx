@@ -106,7 +106,7 @@ const Kontakt = () => {
                 </div>
 
                 <span className="font-bold text-amber-800">
-                  08:00 – 18:00
+                  09:00 – 19:00
                 </span>
               </div>
 
@@ -156,6 +156,11 @@ const Kontakt = () => {
                   <span className="font-semibold">
                     +383 44 233 321
                   </span>
+                  <span className="font-semibold">
+                    +383 45 480 901
+                  </span>
+
+
                 </a>
 
 

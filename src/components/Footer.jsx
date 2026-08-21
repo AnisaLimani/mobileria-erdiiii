@@ -100,6 +100,7 @@ const Footer = () => {
                   className="hover:text-amber-400 transition inline-block"
                 >
                   📞 +383 44 233 321
+                  📞 +383 45 480 901
                 </a>
               </li>
 
@@ -129,7 +130,7 @@ const Footer = () => {
               <li>
                 E Hënë — E Shtunë:
                 <span className="text-white ml-1 block sm:inline">
-                  08:00 — 18:00
+                  09:00 — 19:00
                 </span>
               </li>
 
