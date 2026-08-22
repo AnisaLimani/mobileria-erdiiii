@@ -126,8 +126,8 @@ const Home = () => {
             Ne kujdesemi për paketimin, transportin dhe montimin në destinacionin tuaj.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            {['Kosovë 🇽🇰', 'Shqipëri 🇦🇱', 'Maqedoni 🇲🇰', 'Gjermani 🇩🇪', 
-              'Zvicër 🇨🇭', 'Austri 🇦🇹', 'Itali 🇮🇹', 'Suedi 🇸🇪'].map(country => (
+            {['Kosovë ', 'Shqipëri ', 'Maqedoni ', 'Gjermani ', 
+              'Zvicër ', 'Austri ', 'Itali ', 'Suedi '].map(country => (
               <div key={country} className="bg-white p-3 rounded-lg shadow-md text-sm font-medium hover:shadow-lg transition">
                 {country}
               </div>
