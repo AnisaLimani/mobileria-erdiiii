@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { API_URL, SITE_BASE_URL, UPLOADS_BASE_URL } from '../config';
 
 const Admin = () => {
   // =========================================
@@ -71,66 +72,52 @@ const Admin = () => {
     id: null
   });
 
-  const API_URL = 'http://localhost/mobileria-api/api';
-
-
   // =========================================
   // SHOW MESSAGE
   // =========================================
 
-  const showMessage = (text, type = 'success') => {
+  const showMessage = useCallback((text, type = 'success') => {
     setMessage(text);
     setMessageType(type);
 
     setTimeout(() => {
       setMessage('');
     }, 3000);
-  };
-
-  // =========================================
-  // INITIAL LOAD
-  // =========================================
-
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-    fetchProjects();
-    checkOwnerSession();
   }, []);
 
   // =========================================
   // CHECK OWNER SESSION
   // =========================================
-const checkOwnerSession = async () => {
-  try {
-    const response = await fetch(
-      `${API_URL}/login.php`,
-      {
-        method: 'GET',
-        credentials: 'include'
+  const checkOwnerSession = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/login.php`,
+        {
+          method: 'GET',
+          credentials: 'include'
+        }
+      );
+
+      if (!response.ok) {
+        // 401 këtu thjesht do të thotë që nuk je i kyçur.
+        // Nuk është error që duhet shfaqur në console.
+        setIsOwner(false);
+        return;
       }
-    );
 
-    if (!response.ok) {
-      // 401 këtu thjesht do të thotë që nuk je i kyçur.
-      // Nuk është error që duhet shfaqur në console.
-      setIsOwner(false);
-      return;
-    }
+      const data = await response.json();
 
-    const data = await response.json();
+      if (data.success) {
+        setIsOwner(true);
+      } else {
+        setIsOwner(false);
+      }
 
-    if (data.success) {
-      setIsOwner(true);
-    } else {
+    } catch (error) {
+      console.error('Session check failed:', error);
       setIsOwner(false);
     }
-
-  } catch (error) {
-    console.error('Session check failed:', error);
-    setIsOwner(false);
-  }
-};
+  }, []);
 
   // =========================================
   // LOGIN
@@ -238,7 +225,7 @@ const checkOwnerSession = async () => {
 // FETCH PRODUCTS
 // =========================================
 
-const fetchProducts = async () => {
+const fetchProducts = useCallback(async () => {
   try {
     const response = await fetch(
       `${API_URL}/get_products.php`
@@ -271,13 +258,13 @@ const fetchProducts = async () => {
       'error'
     );
   }
-};
+}, [showMessage]);
 
   // =========================================
   // FETCH PRODUCTS
   // =========================================
 
-const fetchCategories = async () => {
+const fetchCategories = useCallback(async () => {
     try {
         const response = await fetch(
             `${API_URL}/get_categories.php`,
@@ -314,7 +301,7 @@ const fetchCategories = async () => {
             'error'
         );
     }
-};
+}, [showMessage]);
   // =========================================
   // ADD CATEGORY
   // =========================================
@@ -378,7 +365,7 @@ const fetchCategories = async () => {
 
     if (usedCount > 0) {
       showMessage(
-        `Nuk mund të fshihet \"${category.name}\" sepse ka ${usedCount} produkt${usedCount === 1 ? '' : 'e'} në këtë kategori.`,
+        `Nuk mund të fshihet "${category.name}" sepse ka ${usedCount} produkt${usedCount === 1 ? '' : 'e'} në këtë kategori.`,
         'error'
       );
       return;
@@ -387,7 +374,7 @@ const fetchCategories = async () => {
     setConfirmPopup({
       show: true,
       title: 'Fshi kategorinë',
-      message: `A jeni i sigurt që dëshironi ta fshini kategorinë \"${category.name}\"?`,
+      message: `A jeni i sigurt që dëshironi ta fshini kategorinë "${category.name}"?`,
       type: 'category',
       id: category.id
     });
@@ -397,7 +384,7 @@ const fetchCategories = async () => {
   // FETCH PROJECTS
   // =========================================
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       const response = await fetch(
         `${API_URL}/get_projects.php`
@@ -431,7 +418,18 @@ const fetchCategories = async () => {
         'error'
       );
     }
-  };
+  }, [showMessage]);
+
+  // =========================================
+  // INITIAL LOAD
+  // =========================================
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+    fetchProjects();
+    checkOwnerSession();
+  }, [checkOwnerSession, fetchCategories, fetchProducts, fetchProjects]);
 
   // =========================================
   // PRODUCT INPUT
@@ -1567,17 +1565,11 @@ const fetchCategories = async () => {
 
                               <img
                                 src={
-                                  product.image.startsWith(
-                                    'http'
-                                  )
+                                  product.image.startsWith('http')
                                     ? product.image
-                                    : `http://localhost${
-                                        product.image.startsWith(
-                                          '/'
-                                        )
-                                          ? product.image
-                                          : `/mobileria-api/uploads/${product.image}`
-                                      }`
+                                    : product.image.startsWith('/')
+                                      ? `${SITE_BASE_URL}${product.image}`
+                                      : `${UPLOADS_BASE_URL}/${product.image}`
                                 }
                                 alt={
                                   product.name
@@ -2004,17 +1996,11 @@ const fetchCategories = async () => {
 
                               <img
                                 src={
-                                  project.image.startsWith(
-                                    'http'
-                                  )
+                                  project.image.startsWith('http')
                                     ? project.image
-                                    : `http://localhost${
-                                        project.image.startsWith(
-                                          '/'
-                                        )
-                                          ? project.image
-                                          : `/mobileria-api/uploads/${project.image}`
-                                      }`
+                                    : project.image.startsWith('/')
+                                      ? `${SITE_BASE_URL}${project.image}`
+                                      : `${UPLOADS_BASE_URL}/${project.image}`
                                 }
                                 alt={
                                   project.title

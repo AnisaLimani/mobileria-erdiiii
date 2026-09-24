@@ -4,6 +4,8 @@
 require_once '../config/db.php';
 
 $category = isset($_GET['category']) ? $_GET['category'] : '';
+$baseUrl = appBaseUrl();
+$uploadsBaseUrl = rtrim($baseUrl . '/mobileria-api/uploads', '/');
 
 if ($category) {
     $stmt = $conn->prepare("SELECT id, name, description, image, category FROM products WHERE category = ? ORDER BY created_at DESC");
@@ -19,7 +21,7 @@ $products = [];
 while ($row = $result->fetch_assoc()) {
     if (!empty($row['image'])) {
         if (!preg_match('/^https?:\/\//i', $row['image'])) {
-            $row['image'] = 'http://localhost/mobileria-api/uploads/' . $row['image'];
+            $row['image'] = $uploadsBaseUrl . '/' . ltrim($row['image'], '/');
         }
     } else {
         $row['image'] = '';

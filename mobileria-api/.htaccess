@@ -5,7 +5,7 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-    SetEnvIf Origin "^(https?://localhost(:[0-9]+)?)$" CORS_ALLOW_ORIGIN=$0
+    SetEnvIf Origin "^(https?://.*)$" CORS_ALLOW_ORIGIN=$0
     Header set Access-Control-Allow-Origin "%{CORS_ALLOW_ORIGIN}e" env=CORS_ALLOW_ORIGIN
     Header set Access-Control-Allow-Credentials "true" env=CORS_ALLOW_ORIGIN
     Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS_ALLOW_ORIGIN

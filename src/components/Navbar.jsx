@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
-const API_URL = 'http://localhost/mobileria-api/api';
+import { API_URL } from '../config';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-
-const API_URL = 'http://localhost/mobileria-api/api';
+import { API_URL } from '../config';
 
 const CategoryPage = () => {
   const { id } = useParams();

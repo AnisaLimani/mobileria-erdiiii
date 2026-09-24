@@ -7,7 +7,7 @@ $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'domain' => '',
+    'domain' => getenv('APP_COOKIE_DOMAIN') ?: '',
     'secure' => $secure,
     'httponly' => true,
     'samesite' => 'Lax',

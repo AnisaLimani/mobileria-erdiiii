@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost/mobileria-api/api';
+import { API_URL } from '../config';
 
 export const api = {
   getProducts: async (category = '') => {
@@ -11,7 +11,7 @@ export const api = {
       return [];
     }
   },
-  
+
   getProjects: async () => {
     try {
       const res = await fetch(`${API_URL}/get_projects.php`);

@@ -1,11 +1,10 @@
 import ProductCard from '../components/ProductCard';
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
 
 const Komoda = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const API_URL = 'http://localhost/mobileria-api/api';
 
   useEffect(() => {
     fetchProducts();

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { API_URL, SITE_BASE_URL, UPLOADS_BASE_URL } from '../config';
 
 const Projektet = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -7,16 +8,7 @@ const Projektet = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_URL = 'http://localhost/mobileria-api/api';
-
-  // ================================
-  // LOAD PROJECTS
-  // ================================
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -53,7 +45,14 @@ const Projektet = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // ================================
+  // LOAD PROJECTS
+  // ================================
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   // ================================
   // IMAGE URL
@@ -63,7 +62,6 @@ const Projektet = () => {
       return '';
     }
 
-    // Nëse DB e ka URL komplet
     if (
       image.startsWith('http://') ||
       image.startsWith('https://')
@@ -71,21 +69,17 @@ const Projektet = () => {
       return image;
     }
 
-    // Nëse DB e ka:
-    // /mobileria-api/uploads/foto.jpg
     if (image.startsWith('/')) {
-      return `http://localhost${image}`;
+      return `${SITE_BASE_URL}${image}`;
     }
 
-    // Nëse DB e ka vetëm:
-    // foto.jpg
-    return `http://localhost/mobileria-api/uploads/${image}`;
+    return `${UPLOADS_BASE_URL}/${image}`;
   };
 
   // ================================
   // NEXT SLIDE
   // ================================
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (
       isTransitioning ||
       projects.length <= 1
@@ -102,7 +96,7 @@ const Projektet = () => {
     setTimeout(() => {
       setIsTransitioning(false);
     }, 600);
-  };
+  }, [isTransitioning, projects.length]);
 
   // ================================
   // PREVIOUS SLIDE
@@ -151,6 +145,7 @@ const Projektet = () => {
   // ================================
   // AUTO SLIDE
   // ================================
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (projects.length <= 1) {
       return;
@@ -163,6 +158,7 @@ const Projektet = () => {
     return () => clearInterval(interval);
   }, [
     activeIndex,
+    nextSlide,
     projects.length,
     isTransitioning
   ]);
